@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalabel=no">
+    <title>登录</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<!--    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>-->
+<!--    <script src="./vue.js"></script>-->
+    <script src="./js/http.js"></script>
+
+</head>
+
+<body>
+
+
+<div id="app" >
+
+    <div v-show="loginShowState">
+        <p style="font-size: 10px">请输入账号</p>
+        <input type="text" v-model="account" style="background-color: #cccccc; height: 20px">
+        <p style="font-size: 10px">请输入密码</p>
+        <input type="text" v-model="password" style="background-color: #cccccc; height: 20px">
+        <p/>
+        <button @click="loginClick()" style="background-color: red; width: 100px">点击登录</button>
+    </div>
+
+    <div v-show="!loginShowState">
+        <p>网址：</p>
+        <input type="text" v-model="showUrl" style="background-color: #cccccc; height: 20px; width: 80%">
+        <p/>
+        <button @click="changeClick()" style="background-color: red; width: 100px">点击修改</button>
+    </div>
+
+
+</div>
+
+<script>
+
+    let vm = new Vue({
+        el:"#app",
+        data: {
+            "sessionToken":null,
+            "baseUrl":"https://mawD1nNf.api.lncld.net",
+            "account":null,
+            "password":null,
+            "showUrl":null,
+            "loginShowState":true,
+            "preUrl":null
+        },
+        methods: {
+            loginClick:function() {
+                if (this.account == null||this.account == "") {
+                    alert("请输入账号");
+                    return;
+                }
+                if (this.password == null||this.password == "") {
+                    alert("请输入密码");
+                    return;
+                }
+
+                const result = loginRequest(this.account,this.password);
+                if (result == null) {
+                    alert("登录失败，请检查账户密码");
+                } else {
+                    const jsonResult = loadShowUrl();
+                    this.showUrl = jsonResult["show_url"];
+                    if (this.showUrl != null) {
+                        this.preUrl = this.showUrl;
+                        this.loginShowState = false;
+                    }
+                }
+            },
+            changeClick:function () {
+                if (this.showUrl == this.preUrl) {
+                    alert("未修改，和之前的网址一样哦！")
+                    return;
+                }
+                var reg=/^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
+                if (!reg.test(this.showUrl)) {
+                    alert("请检查输入的网址是否正确");
+                    return;
+                }
+                if (changeRequest(this.showUrl) != null) {
+                    alert("已成为修改为："+this.showUrl);
+                    this.preUrl = this.showUrl;
+                }
+            }
+        },
+    });
+
+</script>
+
+</body>
+
+</html>
