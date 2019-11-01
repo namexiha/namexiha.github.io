@@ -77,7 +77,7 @@
                     return;
                 }
                 var reg=/^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
-                if (!reg.test(this.showUrl)) {
+                if (this.showUrl == null||this.showUrl == "") {
                     alert("请检查输入的网址是否正确");
                     return;
                 }
